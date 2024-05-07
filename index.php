@@ -1,9 +1,10 @@
 <?php
 include("menuclass.php");
-$phn=$_GET["phoneNumber"];
-$sessioId=$_GET['sessionId'];
-$txt=$_GET["text"];
+$phn=$_POST["phoneNumber"];
+$sessioId=$_POST['sessionId'];
+$txt=$_POST["text"];
 $menus=new menuclass() ;
+$txt=$menus->midd($txt);
 $expl=explode("*",$txt);
 $co= new PDO("mysql:host=localhost;dbname=phoneorder","root","");
 $q="SELECT * from users where phone='$phn'";
