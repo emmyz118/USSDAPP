@@ -4,7 +4,7 @@ class menuclass{
     private static $text;
 
     function registeredMenus() {
-        echo "CON welcome to A2Z Phones \n1. place order\n2. myorders\n3. myaccount\n4. exit";
+        echo "CON welcome to A2Z Phones \n1. place order\n2. myorders\n3. myaccount\n\n98. back\n99. go to main menu";
     }
     function unregisteredMenus() {
         echo"CON register now\n1. register";
@@ -49,7 +49,7 @@ class menuclass{
 }
 
 elseif($count==2){
-    echo "END order placed  now";
+    echo "END order placed  now\n99. go to main menu";
 }
 
 }
@@ -62,14 +62,14 @@ elseif($count==2){
         $res=$stm->fetchAll(PDO::FETCH_ASSOC) ;
         
         if (count($res)> 0) {
-            echo "END your orders are\n";
+            echo "END your orders are\n99. go to main menu";
              foreach ($res as $row) {
             echo $aa.". ".$row['model']."(".$row['price']."K)( status: ".$row["status"]." )\n";
             $aa++;
         } 
         }
         else{
-            echo "END No order you have placed";
+            echo "END No order you have placed\n99. go to main menu";
         }
       
         $db = null;
@@ -80,24 +80,24 @@ elseif($count==2){
         $q="DELETE FROM users where phone=:phone";
         $stm=$co->prepare($q) ;
         if($stm->execute(["phone"=>$phone])) {
-            echo "END you unregistered your account";
+            echo "END you unregistered your account\n99. go to main menu";
 
         }
         else{
-            echo "END error found";
+            echo "END error found\n99. go to main menu";
         }
     }
     function cpin($txt_arr,$phn){
         $ex=explode("*",$txt_arr);
         $len=count($ex);
     if ($len==2) {
-        echo "CON enter old pin";
+        echo "CON enter old pin\n99. go to main menu";
     }
     else if ($len==3) {
-        echo "CON enter new pin";
+        echo "CON enter new pin\n98. back\n99. go to main menu";
     }
     else if ($len==4) {
-        echo "CON confirm new pin";
+        echo "CON confirm new pin\n98. back\n99. go to main menu";
     }
     else if ($len==5) {
         $co= new PDO("mysql:host=localhost;dbname=phoneorder","root","");
@@ -117,16 +117,16 @@ elseif($count==2){
                     echo "CON Pin changed now\n99. back to main menu";
                 }
                 else{
-                    echo "END error try again";
+                    echo "END error try again\n99. go to main menu";
                 }
 
             }
             else{
-                echo "END password confirmation not match";
+                echo "END password confirmation not match\n98. back\n99. go to main menu";
             }
         }
         else{
-            echo "END invalid old pin";
+            echo "END invalid old pin\n98. back\n99. go to main menu";
         }
 
     } 
@@ -134,7 +134,7 @@ elseif($count==2){
 
 
 function myaccountt() {
-    echo"CON choose what to do \n1. change pin\n2. unregister account";
+    echo"CON choose what to do \n1. change pin\n2. unregister account\n98. back\n99. go to main menu";
     }
     function myaccount($txt_arr,$phn,$oldpin,$newpin,$cnewpin) {
         switch ($txt_arr[1]) {
@@ -148,19 +148,19 @@ function myaccountt() {
     function register($arr,$gtphone,$name1,$name2,$pin1,$pin2) {
         $exp=count($arr);
         if ($exp==1) {
-            echo "CON enter your first name";
+            echo "CON enter your first name\n99. go to main menu";
             
         }
         else if ($exp==2) {
-            echo "CON enter your second name";
+            echo "CON enter your second name\n98. back\n99. go to main menu";
            
         }
         else if ($exp==3) {
-            echo "CON set your pin";
+            echo "CON set your pin\n98. back\n99. go to main menu";
 
         }
         else if ($exp==4) {
-            echo "CON confirm your pin"; 
+            echo "CON confirm your pin\n98. back\n99. go to main menu"; 
         }
         if ($exp==5) {
             $co= new PDO("mysql:host=localhost;dbname=phoneorder","root","");
@@ -175,15 +175,15 @@ function myaccountt() {
                     if ($statement->execute(
                         array("fname"=>$name1,"lname"=>$name2,"ppassword"=> md5($pin1),"phone"=>$gtphone)
                     )) {
-                        echo "END you are registered now";
+                        echo "END you are registered now\n99. go to main menu";
                     }
                 }
                 else{
-                    echo " END you are already registered";
+                    echo " END you are already registered\n99. go to main menu";
                 }
             }
             else{
-                echo "END pin not match";
+                echo "END pin not match\n99. go to main menu";
             }
         }
     }
@@ -210,16 +210,36 @@ function myaccountt() {
                     if ($statement->execute(
                         array("fname"=>$name1,"lname"=>$name2,"ppassword"=>$ppass,"phone"=>$phn)
                     )) {
-                        echo "END you are registered now";
+                        echo "END you are registered now\n99. go to main menu";
                     }
                 }
                 else{
-                    echo " END you are already registered";
+                    echo " END you are already registered\n99. go to main menu";
                 }
             }
             else{
-                echo "END pin not match";
+                echo "END pin not match\n99. go to main menu";
             }
         }
+    }
+    public function midd($text){
+        return $this->Back($this->ToMain($text));
+    }
+    public function Back($text){
+        $exploded = explode("*",$text);
+        while(array_search(Util::$back, $exploded) != false){
+            $findex = array_search(Util::$back, $exploded);
+            array_splice($exploded, $findex-1, 2);
+        }
+        return join("*", $exploded);
+    }
+
+    public function ToMain($text){
+        $exploded = explode("*",$text);
+        while(array_search(Util::$mainmenu, $exploded) != false){
+            $first = array_search(Util::$mainmenu, $exploded);
+            $exploded = array_slice($exploded, $first + 1);
+        }
+        return join("*",$exploded);
     }
 }
